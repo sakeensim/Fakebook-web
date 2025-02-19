@@ -9,9 +9,21 @@ function PostForm() {
   const user = useUserStore(state => state.user)
   const [message, setMessage] = useState('')
   const [addPic, setAddPic] = useState(false)
+  const [file, setfile] = useState(null)
 
-  const hdlCreatePost = ()=> {
-    toast(message)
+  //ยิง Api
+  const hdlCreatePost = async ()=> {
+   try {
+    const body = new FormData()
+    body.append('message', message)
+    if(file) {
+      body.append('image',file)
+    }
+   } catch (err) {
+    const errMsg = err.response?.data?.error || err.message
+    console.log(err)
+    toast.error(errMsg)
+  }
   }
   return (
     <div className='flex flex-col gap-2'>
@@ -43,7 +55,7 @@ function PostForm() {
       // }}
       ></textarea>
       { addPic &&
-        <AddPicture />
+        <AddPicture file={file} setfile={setfile} />
       }
       <div className="flex border rounded-lg p-2 justify-between items-center">
         <p>add with your post</p>
@@ -56,8 +68,8 @@ function PostForm() {
       </div>
       <button className='btn btn-sm btn-primary rounded-lg'
       onClick={hdlCreatePost}
-      // disabled ={message.trim().length === 0}
-      disabled = {!message}
+      disabled ={message.trim().length === 0 && !file}
+      // disabled = {!message}
       >Create Post</button>
     </div>
   )
