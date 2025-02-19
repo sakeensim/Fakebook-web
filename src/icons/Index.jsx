@@ -218,7 +218,7 @@ export const FacebookTitle = (props) => {
     </svg>
     )
   }
-  
+
   export function SaveIcon(props) {
     return (
       <svg
@@ -318,5 +318,21 @@ export const FacebookTitle = (props) => {
       />
       <path fill="#FFF" d="M9 23s3 1 9 1 9-1 9-1-2 4-9 4-9-4-9-4z" />
     </svg>
+    )
+  }
+
+  export function AddPicIcon(props) {
+    return (
+      <svg
+        fill="#144bf0"
+        height="200px"
+        width="200px"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 26.914 26.914"
+        xmlSpace="preserve"
+        {...props}
+      >
+        <path d="M26.369 1.739H.546A.544.544 0 000 2.282V24.63c0 .298.243.546.546.546h25.823a.548.548 0 00.545-.546V2.282a.545.545 0 00-.545-.543zM10.131 6.668a2.894 2.894 0 01-2.895 2.896A2.891 2.891 0 014.34 6.668a2.895 2.895 0 115.791 0zm14.623 15.709h-1.808v1.848h-1.573v-1.848h-1.83v-1.572h1.83v-1.789h1.573v1.789h1.808v1.572zm.35-3.95H2.071v-.222l4.551-5.202 2.563 1.729 2.985-5.118 3.472 2.46 3.129-6.498 6.371 12.613v.238h-.038z" />
+      </svg>
     )
   }
