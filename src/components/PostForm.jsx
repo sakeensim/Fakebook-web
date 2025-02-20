@@ -28,7 +28,7 @@ function PostForm(props) {
     await createPost(body,token,user) 
     toast('create post done')
     closePostForm()
-    getAllPosts(token)
+    // getAllPosts(token)
     
    } catch (err) {
     const errMsg = err.response?.data?.error || err.message

@@ -2,10 +2,52 @@ import React from 'react'
 import Avatar from './Avatar'
 import { CloseIcon, CommentIcon, LikeIcon, ShareIcon, ThreeDotIcon } from '../icons/Index'
 import CommentContainer from './CommentContainer'
+import useUserStore from '../stores/userStore'
+import usePostStore from '../stores/postStore'
+import { toast } from 'react-toastify'
+import TimeAgo from 'react-timeago'
 
 function PostItem(props) {
+    const user = useUserStore(state=>state.user)
+    const token = useUserStore(state=>state.token)
+    const deletePost = usePostStore(state=>state.deletePost)
+    const getAllPosts = usePostStore(state=>state.getAllPosts)
+    const setCurrentPost = usePostStore(state=>state.setCurrentPost)
+	const createLike = usePostStore(state=>state.createLike)
+	const unLike = usePostStore(state=>state.unLike)
     const { post } = props
-    // console.log(post)
+    // console.log(post.likes)
+
+	const haveLike = ()=>post.likes.findIndex(el=>el.userId === user.id) !== -1
+	const hdlLikeClick = async e => {
+		// if(post.userId === user.id) {
+		//  return toast.info('Please not like your own post')
+		// }
+		if(haveLike()) {
+		 await unLike(token, post.id)
+		}else {
+		 await createLike(token, {postId : post.id})
+		}
+		getAllPosts(token)
+	   }
+
+    const hdlDelete = async()=>{
+        try {
+            await deletePost(post.id,token)
+            toast.success("Delete Done")
+            // getAllPosts(token)
+    
+        } catch (err) {
+            const errMsg = err.response?.data?.error || err.message
+            toast.error(errMsg)
+            console.log(err)
+        }
+    }
+
+    const hdlShowEditModal = ()=>{
+        setCurrentPost(post)
+        document.getElementById('editform-modal').showModal()
+    }
     return (
         <div className="card bg-base-100 shadow-xl">
 			<div className="card-body p-3">
@@ -15,12 +57,12 @@ function PostItem(props) {
 						<div className="flex flex-col">
 							<p className='font-bold text-sm'>{post.user.firstName} {post.user.lastName}</p>
 							<p className='text-xs opacity-70'>
-								{new Date(post.createdAt).toDateString()},{new Date(post.createdAt).toLocaleTimeString()}
+								<TimeAgo date={post.createdAt}/>
 							</p>
 						</div>
 					</div>
 					<div className="flex gap-2">
-						<div className="dropdown">
+						{user.id === post.userId && (<div className="dropdown">
 							<div tabIndex={0} role='button'>
 								<div className="avatar items-center cursor-pointer">
 									<div className="w-10 h-10 rounded-full !flex justify-center items-center hover:bg-gray-200">
@@ -29,10 +71,12 @@ function PostItem(props) {
 								</div>
 							</div>
 							<ul tabIndex={0} className='dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow'>
-								<li><a>Edit</a></li>
-								<li><a>Delete</a></li>
+								<li onClick={hdlShowEditModal}><a>Edit</a></li>
+								<li onClick={hdlDelete}><a>Delete</a></li>
 							</ul>
-						</div>
+						</div>)
+
+                        }
 						<div className="avatar items-center cursor-pointer">
 							<div className="w-10 h-10 rounded-full !flex justify-center items-center hover:bg-gray-200">
 								<CloseIcon className='w-6' />
@@ -60,7 +104,8 @@ function PostItem(props) {
 				</div>
 				<div className="divider h-0 my-0"></div>
 				<div className="flex gap-3 justify-between">
-					<div className="flex gap-3 justify-center items-center cursor-pointer hover:bg-gray-300 rounded-lg py-2 flex-1">
+					<div className={`flex gap-3 justify-center items-center cursor-pointer hover:bg-gray-300 rounded-lg py-2 flex-1
+						${haveLike()? 'bg-blue-300 text-white':'' }`} onClick={hdlLikeClick}>
 						<LikeIcon className='w-6'/> Like
 					</div>
 					<div className="flex gap-3 justify-center items-center cursor-pointer hover:bg-gray-300 rounded-lg py-2 flex-1">
@@ -71,7 +116,7 @@ function PostItem(props) {
 					</div>
 				</div>
 				<div className="divider h-0 my-0"></div>
-				<CommentContainer />
+				<CommentContainer postId={post.id} comments={post.comments}/>
 			</div>
 		</div>
     )
