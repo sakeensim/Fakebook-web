@@ -4,9 +4,14 @@ import useUserStore from '../stores/userStore'
 import { PhotoIcon } from '../icons/Index'
 import { toast } from 'react-toastify'
 import AddPicture from './AddPicture'
+import usePostStore from '../stores/postStore'
 
-function PostForm() {
+function PostForm(props) {
+  const {closePostForm} = props
   const user = useUserStore(state => state.user)
+  const token = useUserStore(state => state.token)
+  const createPost = usePostStore(state=>state.createPost)
+  const getAllPosts = usePostStore(state=>state.getAllPosts)
   const [message, setMessage] = useState('')
   const [addPic, setAddPic] = useState(false)
   const [file, setfile] = useState(null)
@@ -19,12 +24,20 @@ function PostForm() {
     if(file) {
       body.append('image',file)
     }
+
+    await createPost(body,token,user) 
+    toast('create post done')
+    closePostForm()
+    getAllPosts(token)
+    
    } catch (err) {
     const errMsg = err.response?.data?.error || err.message
     console.log(err)
     toast.error(errMsg)
   }
   }
+
+
   return (
     <div className='flex flex-col gap-2'>
       <h3 className='text-xl text-center'>Create Post</h3>

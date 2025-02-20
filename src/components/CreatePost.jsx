@@ -7,6 +7,9 @@ import PostForm from './PostForm'
 function CreatePost() {
     const user = useUserStore(state=>state.user)
     const [isOpen, setIsopen] = useState(false)
+    const closePostForm = ()=>{
+      setIsopen(false)
+      document.getElementById('postform-modal').close()}
   return (
     <>
     <div className='card bg-base-100 shadow-xl'>
@@ -43,11 +46,9 @@ function CreatePost() {
     <dialog id="postform-modal" className="modal">
                 <div className="modal-box">
                     <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                    onClick={()=>{
-                        setIsopen(false)
-                        document.getElementById('postform-modal').close()}}
+                    onClick={closePostForm}
                     >✕</button>
-                    {isOpen && <PostForm />}
+                    {isOpen && <PostForm closePostForm= {closePostForm}/>}
 
                 </div>
             </dialog>

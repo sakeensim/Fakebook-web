@@ -17,7 +17,7 @@ function AddPicture(props) {
         rounded-lg relative cursor-pointer"
         onClick={()=>document.getElementById('input-file').click()}
         >
-            <input type='file' className='hidden' id='input-file'
+            <input type='file' className='hidden' id='input-file' multiple
             onChange={hdlFileChange}
             />
             {file && 
